@@ -6,7 +6,7 @@
      * Version: 0.1
      * Author: Daniel Smith
      * Author URI: http://danielrs.com
-     * License: GPL2
+     * License: MIT License
      */
     defined('ABSPATH') or die("No script kiddies please!");
     ini_set('display_errors',1);
