@@ -3,7 +3,7 @@
      * Plugin Name: WP Page Admin Widget
      * Plugin URI: http://github.com/danielrsmith/wppaw
      * Description: Adds recently updated pages to the admin dashboard
-     * Version: 0.1
+     * Version: 0.2
      * Author: Daniel Smith
      * Author URI: http://danielrs.com
      * License: MIT License
