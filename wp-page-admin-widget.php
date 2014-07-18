@@ -3,14 +3,14 @@
      * Plugin Name: WP Page Admin Widget
      * Plugin URI: http://github.com/danielrsmith/wppaw
      * Description: Adds recently updated pages to the admin dashboard
-     * Version: 0.2
+     * Version: 0.1.1
      * Author: Daniel Smith
      * Author URI: http://danielrs.com
      * License: MIT License
      */
     defined('ABSPATH') or die("No script kiddies please!");
 
-    include_once('updater.php');
+    include_once('lib/updater.php');
 
     if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
       $config = array(
@@ -49,44 +49,48 @@
         die();
     }
 
+
     function wppaw_get_recent_content($current_page = 1, $number = 5)
     {
-        $offset = ($current_page - 1) * $number;
-
         $params = array(
-            'number' => $number,
-            'offset' => $offset,
+            'posts_per_page' => $number,
+            'paged' => $current_page,
             'post_type' => 'page',
-            'sort_order' => 'desc',
-            'sort_column' => 'post_modified',
-            'post_status' => 'publish'
+            'orderby' => 'modified'
         );
-        $recent_pages = get_pages($params);
+
+        $query = new WP_Query($params);
+
         $response = '';
 
-        if(count($recent_pages) == 0)
+        while($query->have_posts())
         {
-            $response .= 'There are no more pages to display.';
-        }
-        else
-        {
-          foreach($recent_pages as $page)
-          {
-              $response .= page_row($page);
-          }
-
-          $response = "<ul>$response</ul>";
+            $query->the_post();
+            $response .= page_row($query->post);
         }
 
-        if($current_page > 1)
+        $response = "<ul>$response</ul>";
+
+        $show_prev = ($current_page > 1);
+        $show_next = ($current_page != $query->max_num_pages);
+
+        if($show_prev)
         {
             $response .= '<a href="#" id="wppaw-prev-page">Prev</a>';
         }
 
-        if(count($recent_pages > 0))
+        if($show_prev && $show_next)
         {
-            $response .= '| <a href="#" id="wppaw-next-page">Next</a>';
+            $response .= ' | ';
         }
+
+        if($show_next)
+        {
+            $response .= '<a href="#" id="wppaw-next-page">Next</a>';
+        }
+
+        $response .= ' (' . $current_page . ' of ' . $query->max_num_pages . ')';
+
         $response .= '<span id="wppaw-current-page" class="hidden">' . $current_page . '</span>';
         $response .= '<span id="wppaw-recent-nonce" class="hidden">' . wp_create_nonce( 'wppaw-recent-nonce' ) . '</span>';
 
