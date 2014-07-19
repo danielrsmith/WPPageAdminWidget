@@ -1,0 +1,19 @@
+#wppaw_recent_dashboard_widget .inside ul li span.wppaw-title{
+    color: #777;
+    float: left;
+    margin-right: 8px;
+    min-width: 250px;
+}
+
+#wppaw_recent_dashboard_widget .inside ul li span.wppaw-actions{
+    float: right;
+}
+
+#wppaw_recent_dashboard_widget .inside .wppaw-pagination{
+    margin-top: 10px;
+}
+
+#wppaw_recent_dashboard_widget .inside .wppaw-pagination span{
+    color: #777;
+    margin-left: 12px;
+}

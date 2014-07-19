@@ -3,7 +3,7 @@
      * Plugin Name: WP Page Admin Widget
      * Plugin URI: http://github.com/danielrsmith/wppaw
      * Description: Adds recently updated pages to the admin dashboard
-     * Version: 0.1.1
+     * Version: 0.1.2
      * Author: Daniel Smith
      * Author URI: http://danielrs.com
      * License: MIT License
@@ -73,7 +73,7 @@
 
         $show_prev = ($current_page > 1);
         $show_next = ($current_page != $query->max_num_pages);
-
+        $response .= '<div style="clear: both;"></div><div class="wppaw-pagination">';
         if($show_prev)
         {
             $response .= '<a href="#" id="wppaw-prev-page">Prev</a>';
@@ -89,8 +89,8 @@
             $response .= '<a href="#" id="wppaw-next-page">Next</a>';
         }
 
-        $response .= ' (' . $current_page . ' of ' . $query->max_num_pages . ')';
-
+        $response .= '<span>(' . $current_page . ' of ' . $query->max_num_pages . ')</span>';
+        $response .= '</div>';
         $response .= '<span id="wppaw-current-page" class="hidden">' . $current_page . '</span>';
         $response .= '<span id="wppaw-recent-nonce" class="hidden">' . wp_create_nonce( 'wppaw-recent-nonce' ) . '</span>';
 
@@ -100,7 +100,7 @@
     function page_row($page)
     {
         $title = $page->post_title != "" ? $page->post_title : '(no title)';
-        return '<li><a href="' . get_edit_post_link($page->ID) . '">' . $title .'</a></li>';
+        return '<li><span class="wppaw-title">' . $title . '</span><span class="wppaw-actions"><a href="' . get_edit_post_link($page->ID) . '">Edit</a> | <a href="' . get_permalink($page->ID) . '">View</a></span></li>';
     }
 
     add_action('wp_ajax_get_recent_pages', 'wppaw_recent_widget_content_ajax');
@@ -149,3 +149,11 @@
     }
 
     add_action( 'admin_footer', 'wppaw_dashboard_javascript' );
+
+    function wppaw_admin_stylesheet()
+    {
+      	wp_register_style( 'wppaw_admin_stylesheet', plugins_url( '/css/main.css', __FILE__ ));
+      	wp_enqueue_style( 'wppaw_admin_stylesheet' );
+    }
+
+    add_action('admin_enqueue_scripts', 'wppaw_admin_stylesheet');
